@@ -12,18 +12,753 @@ const NPTEL_DATA = {
     {
       id: 1,
       number: 1,
-      title: "Introduction & Basic Properties",
+      title: "Introduction, Properties of Materials & Thermal Expansion",
       lectures: "Lectures 1 - 3",
-      status: "upcoming",
-      summary: "Overview of materials physics, property classification, and thermal expansion fundamentals."
+      status: "active",
+      summary: "Engineering vs scientific paradigms, empirical vs first-principles models, validity boundaries, positive thermal resistivity coefficient of metals, elastic modulus from linear stress-strain region, corrosion in circuits, thermal expansion mechanisms, asymmetric potential well E(r), and bimetallic strip applications.",
+      studyMaterials: {
+        quickOverview: "Week 1 introduces materials physics through the dual lenses of industrial engineering and fundamental science. While engineers address practical performance, reliability, and processability (such as whether a batch of rubber is stickier or if a component resists corrosion), scientists investigate atomic-scale mechanisms, crystal structure, and chemical bonding (such as polymer crosslinking density).\\n\\nModels without fundamental scientific derivations are termed empirical models; every model has defined validity boundaries beyond which its assumptions fail. In thermal physics, metals exhibit a positive temperature coefficient of resistivity because thermal lattice vibrations scatter electrons. Under tensile loading, Hooke's law yields the modulus of elasticity from the linear elastic slope. Crucially, thermal expansion arises directly from the asymmetry (anharmonicity) of the interatomic potential energy curve E(r): as thermal energy increases, atoms oscillate between turning points whose midpoint shifts outward, causing net expansion. This effect is exploited in bimetallic strips and must be engineered around in structural joints.",
+        
+        formulaSheet: [
+          { name: "Linear Thermal Expansion", formula: "\\Delta L = \\alpha_L L_0 \\Delta T", units: "m (with \\alpha_L \\text{ in } \\text{K}^{-1})", desc: "Change in length proportional to initial length and temperature change." },
+          { name: "Volumetric Thermal Expansion", formula: "\\Delta V = \\beta V_0 \\Delta T \\approx 3\\alpha_L V_0 \\Delta T", units: "m³", desc: "Isotropic volumetric expansion coefficient is approximately three times linear coefficient." },
+          { name: "Hooke's Law (Elastic Modulus)", formula: "\\sigma = E \\epsilon \\iff E = \\frac{d\\sigma}{d\\epsilon}", units: "Pa (or GPa)", desc: "Young's modulus obtained from the slope of the linear elastic region of stress-strain curve." },
+          { name: "Thermal Resistivity of Metals", formula: "\\rho(T) = \\rho_0 [1 + \\alpha_R (T - T_0)] \\quad (\\alpha_R > 0)", units: "\\Omega\\cdot\\text{m}", desc: "Metals have a positive temperature coefficient of electrical resistivity due to phonon scattering." },
+          { name: "Interatomic Potential Energy", formula: "E(r) = -\\frac{A}{r^m} + \\frac{B}{r^n} \\quad (n > m)", units: "Joules (or eV)", desc: "Asymmetry between long-range attraction and steep short-range repulsion causes thermal expansion." },
+          { name: "Radius of Curvature in Bimetallic Strip", formula: "\\frac{1}{R} \\propto (\\alpha_2 - \\alpha_1) \\Delta T", units: "m⁻¹", desc: "Bending curvature driven by the differential thermal expansion coefficients of bonded metals." }
+        ],
+
+        lecturesBreakdown: [
+          {
+            lectureNo: 1,
+            title: "Lecture 1: Introduction to Materials Physics",
+            bullets: [
+              "Engineer vs Scientist Perspectives: Engineers optimize macroscopic performance, yield, and commercial reliability (e.g., rubber stickiness, corrosion prevention); scientists probe microscopic origins (e.g., polymer crosslinking degree, electronic states).",
+              "Model Classification: Empirical models fit experimental observations without deep fundamental theory; first-principles models derive macroscopic properties directly from quantum and thermodynamic laws.",
+              "Model Boundaries: A model is reliable and valid only within its verified envelope of assumptions, and is useless beyond those limits."
+            ]
+          },
+          {
+            lectureNo: 2,
+            title: "Lecture 2: Mechanical & Electrical Properties of Materials",
+            bullets: [
+              "Stress-Strain Curve: Modulus of elasticity (Young's modulus $E$) is determined strictly from the slope of the initial linear elastic regime, representing interatomic spring stiffness.",
+              "Resistivity Temperature Coefficient: Metals exhibit positive thermal resistivity coefficients ($\alpha_R > 0$) because rising temperature amplifies lattice vibrations (phonons), increasing electron collision frequency.",
+              "Corrosion in Electrical Circuits: Electrical joints, circuit tracks, and contacts can corrode via galvanic, atmospheric, or fretting oxidation, degrading circuit conductivity."
+            ]
+          },
+          {
+            lectureNo: 3,
+            title: "Lecture 3: Thermal Expansion & Interatomic Potentials",
+            bullets: [
+              "Asymmetric Potential Well: The interatomic potential $E(r)$ is asymmetric (steep short-range Pauli repulsion, gentle long-range electrostatic/van der Waals attraction).",
+              "Origin of Thermal Expansion: At higher thermal energies, the mean separation between atoms shifts to larger values ($r_{\text{avg}} > r_0$). If the potential were purely parabolic/symmetric, materials would not expand upon heating.",
+              "Negative Thermal Expansion: While most materials expand, specific anomalous materials contract over certain temperature windows (e.g., liquid water $0–4^\circ\text{C}$, $\text{ZrW}_2\text{O}_8$) due to transverse vibrational modes.",
+              "Bimetallic Strips: Bonding two metals with different $\alpha_L$ creates predictable temperature-dependent deflection, utilized in thermostats and thermal safety cutoffs."
+            ]
+          }
+        ],
+
+        examTraps: [
+          "Engineer vs Scientist Focus: Engineer $\\to$ Macroscopic practical questions (stickiness of rubber batch); Scientist $\\to$ Microscopic parameters (degree of crosslinking).",
+          "Metals Resistivity: POSITIVE temperature coefficient (resistivity increases with temperature).",
+          "Modulus of Elasticity: Derived from the LINEAR region of the stress-strain curve, not non-linear or area under curve.",
+          "Potential Well Asymmetry: Asymmetric potential curve is the FUNDAMENTAL reason for thermal expansion.",
+          "Heating Effect: Most materials expand, but SOME MATERIALS CONTRACT (not 'all materials expand').",
+          "Corrosion in Circuits: Circuits CAN corrode."
+        ]
+      },
+
+      assignmentQuestions: [
+        {
+          id: "W1-A1",
+          number: 1,
+          type: "single",
+          question: "A typical engineer in a tyre industry deals with questions such as (most likely):",
+          options: [
+            "Is the new batch of rubber stickier than the old batch",
+            "What is the bonding in the rubber side chain",
+            "What are groups in the side chain",
+            "What is the equivalent weight of the rubber"
+          ],
+          correctAnswer: 0,
+          explanation: "Engineers focus on macroscopic performance, processability, and practical product characteristics (like tackiness and adhesion of rubber batches), whereas scientists focus on molecular bonding and chemical side-chain groups.\n\n**Correct Option: A.**",
+          points: 1
+        },
+        {
+          id: "W1-A2",
+          number: 2,
+          type: "single",
+          question: "A typical scientist in a university, working on polymers, deals with questions such as (Most likely):",
+          options: [
+            "What is the extent of crosslinking in this polymer",
+            "What should the pricing of a particular batch of polymer be",
+            "Which colour of polymer will the customer like",
+            "What is the best size of package for the order placed by the customer"
+          ],
+          correctAnswer: 0,
+          explanation: "University research scientists focus on fundamental structural, chemical, and physical parameters, such as the degree of crosslinking that dictates polymer network mechanics.\n\n**Correct Option: A.**",
+          points: 1
+        },
+        {
+          id: "W1-A3",
+          number: 3,
+          type: "single",
+          question: "Models built without complete understanding of the science behind the phenomena are referred to as",
+          options: [
+            "First principles models",
+            "Empirical models",
+            "Thermodynamic models",
+            "Classical models"
+          ],
+          correctAnswer: 1,
+          explanation: "Empirical models are derived from observed correlations and experimental fitting curves without a rigorous first-principles theoretical understanding of the underlying physics.\n\n**Correct Option: B (Empirical models).**",
+          points: 1
+        },
+        {
+          id: "W1-A4",
+          number: 4,
+          type: "single",
+          question: "Models that are known to fail beyond some limits are",
+          options: [
+            "Useless and need to be discarded",
+            "Useless within those limits",
+            "Useless beyond those limits",
+            "Are empirical"
+          ],
+          correctAnswer: 2,
+          explanation: "Models with defined validity boundaries remain highly practical and useful within their operating envelope, but are useless beyond those limits where their underlying assumptions break down.\n\n**Correct Option: C (Useless beyond those limits).**",
+          points: 1
+        },
+        {
+          id: "W1-A5",
+          number: 5,
+          type: "single",
+          question: "Metals have:",
+          options: [
+            "Negative coefficient of thermal resistivity",
+            "Neutral coefficient of thermal resistivity",
+            "Positive coefficient of thermal resistivity",
+            "Zero coefficient of thermal resistivity"
+          ],
+          correctAnswer: 2,
+          explanation: "In metals, electrical resistivity increases with temperature because thermal lattice vibrations (phonons) scatter conduction electrons, meaning metals possess a positive temperature coefficient of resistivity ($\\alpha_R > 0$).\n\n**Correct Option: C (Positive coefficient of thermal resistivity).**",
+          points: 1
+        },
+        {
+          id: "W1-A6",
+          number: 6,
+          type: "single",
+          question: "The modulus of elasticity is obtained from:",
+          options: [
+            "The linear region of the stress strain curve",
+            "The non-linear region of the stress strain curve",
+            "The area under the stress strain curve",
+            "The area above the stress strain curve"
+          ],
+          correctAnswer: 0,
+          explanation: "By Hooke's law, elastic modulus $E = \\sigma / \\epsilon$ is the slope of the initial linear (reversible elastic) region of the engineering stress-strain curve.\n\n**Correct Option: A (The linear region of the stress strain curve).**",
+          points: 1
+        },
+        {
+          id: "W1-A7",
+          number: 7,
+          type: "single",
+          question: "Electrical circuits",
+          options: [
+            "Can corrode",
+            "Cannot corrode",
+            "Are unrelated to corrosion",
+            "Are the main source of corrosion nationally"
+          ],
+          correctAnswer: 0,
+          explanation: "Electrical contacts, PCB copper traces, and solder joints are metal conductors that undergo galvanic, atmospheric, and fretting corrosion when exposed to moisture and environmental contaminants.\n\n**Correct Option: A (Can corrode).**",
+          points: 1
+        },
+        {
+          id: "W1-A8",
+          number: 8,
+          type: "single",
+          question: "Thermal expansion is useful in the following application",
+          options: [
+            "Joints of railway lines",
+            "Joints in bridges",
+            "Bimetallic strips",
+            "Strings on a guitar"
+          ],
+          correctAnswer: 2,
+          explanation: "Bimetallic strips bond two metals with different coefficients of thermal expansion; heating causes the strip to bend predictably, making it widely used in thermostats and thermal circuit breakers.\n\n**Correct Option: C (Bimetallic strips).**",
+          points: 1
+        },
+        {
+          id: "W1-A9",
+          number: 9,
+          type: "single",
+          question: "Upon heating",
+          options: [
+            "All materials expand",
+            "All materials contract",
+            "Some materials expand and some material contract",
+            "Most materials expand and then contract"
+          ],
+          correctAnswer: 2,
+          explanation: "While the vast majority of materials undergo positive thermal expansion, certain specialized materials exhibit negative thermal expansion (contract upon heating) over specific temperature intervals (e.g., water between 0°C and 4°C, $\\text{ZrW}_2\\text{O}_8$).\n\n**Correct Option: C (Some materials expand and some material contract).**",
+          points: 1
+        },
+        {
+          id: "W1-A10",
+          number: 10,
+          type: "single",
+          question: "For most materials, the E Vs r curve is",
+          options: [
+            "Symmetric",
+            "Asymmetric",
+            "Circular",
+            "A single point"
+          ],
+          correctAnswer: 1,
+          explanation: "The interatomic potential energy curve $E(r)$ is inherently asymmetric (steep repulsive barrier at short range, softer attractive tail at long range). This asymmetry is the fundamental physical origin of thermal expansion.\n\n**Correct Option: B (Asymmetric).**",
+          points: 1
+        }
+      ],
+
+      masteryExamQuestions: [
+        {
+          id: "W1-M1",
+          number: 1,
+          type: "single",
+          section: "Section A — Materials Science & Modeling",
+          question: "What is the primary physical origin of thermal expansion in crystalline solids?",
+          options: [
+            "Purely symmetric harmonic oscillations of atoms",
+            "The asymmetry (anharmonicity) of the interatomic potential well",
+            "Nuclear decay within the crystal",
+            "Gravitational compression"
+          ],
+          correctAnswer: 1,
+          explanation: "Because the potential energy curve $E(r)$ rises much more steeply during compression than expansion, thermal excitation causes the mean interatomic separation to increase with temperature.\n\n**Correct Option: B.**",
+          points: 1
+        },
+        {
+          id: "W1-M2",
+          number: 2,
+          type: "single",
+          section: "Section A — Materials Science & Modeling",
+          question: "If an interatomic potential energy curve were perfectly symmetric (parabolic), the coefficient of thermal expansion would be:",
+          options: [
+            "Infinite",
+            "Positive and large",
+            "Exactly zero",
+            "Negative"
+          ],
+          correctAnswer: 2,
+          explanation: "In a purely harmonic (symmetric) potential, higher vibrational states oscillate symmetrically about the equilibrium position $r_0$, so the average interatomic distance does not change with temperature, yielding zero thermal expansion.\n\n**Correct Option: C.**",
+          points: 1
+        },
+        {
+          id: "W1-M3",
+          number: 3,
+          type: "single",
+          section: "Section A — Materials Science & Modeling",
+          question: "A bimetallic strip consists of Metal A (higher thermal expansion coefficient) bonded to Metal B (lower thermal expansion coefficient). Upon heating, the strip curves:",
+          options: [
+            "Towards Metal A (Metal A on inside of curve)",
+            "Towards Metal B (Metal B on inside of curve)",
+            "Remains perfectly straight",
+            "Twists randomly without bending"
+          ],
+          correctAnswer: 1,
+          explanation: "Metal A expands more than Metal B for the same temperature change, forcing Metal A to take the longer outer arc while Metal B remains on the inner radius, curling towards Metal B.\n\n**Correct Option: B.**",
+          points: 1
+        },
+        {
+          id: "W1-M4",
+          number: 4,
+          type: "single",
+          section: "Section B — Mechanical & Electrical Properties",
+          question: "Hooke's law in one dimension states that stress is linearly proportional to strain. This relationship holds:",
+          options: [
+            "Across the entire stress-strain curve up to fracture",
+            "Only within the linear elastic limit",
+            "Only in the plastic deformation region",
+            "Exclusively at the yield point"
+          ],
+          correctAnswer: 1,
+          explanation: "Hooke's law ($\sigma = E \epsilon$) is valid only in the initial linear elastic regime, where atomic bonds stretch reversibly without permanent atomic slip.\n\n**Correct Option: B.**",
+          points: 1
+        },
+        {
+          id: "W1-M5",
+          number: 5,
+          type: "single",
+          section: "Section B — Mechanical & Electrical Properties",
+          question: "Why does the electrical resistance of pure copper increase as it is heated?",
+          options: [
+            "The number of free electrons decreases dramatically",
+            "Enhanced phonon vibrations increase the electron scattering rate",
+            "The copper atoms turn into insulators",
+            "The cross-sectional area expands infinitely"
+          ],
+          correctAnswer: 1,
+          explanation: "Thermal energy increases the amplitude of lattice vibrations (phonons), reducing electron mean free path and relaxation time $\\tau$, which elevates resistivity (positive thermal coefficient).\n\n**Correct Option: B.**",
+          points: 1
+        },
+        {
+          id: "W1-M6",
+          number: 6,
+          type: "single",
+          section: "Section B — Mechanical & Electrical Properties",
+          question: "In bridge and railway engineering, expansion joints are provided because:",
+          options: [
+            "Thermal expansion causes unrestrained expansion that is useful",
+            "Thermal expansion causes constrained stresses that can buckle tracks and beams",
+            "To allow corrosion to clean the joints",
+            "To increase electrical conductivity"
+          ],
+          correctAnswer: 1,
+          explanation: "Thermal expansion must be accommodated; constraining thermal growth produces massive internal thermal stresses ($\sigma = E \alpha \Delta T$) that cause buckling or catastrophic fracture.\n\n**Correct Option: B.**",
+          points: 1
+        },
+        {
+          id: "W1-M7",
+          number: 7,
+          type: "single",
+          section: "Section C — Thermal Physics & Empirical Laws",
+          question: "Liquid water between 0°C and 4°C is a well-known example of:",
+          options: [
+            "Infinite expansion",
+            "Negative thermal expansion (volume decreases upon heating)",
+            "Constant density regardless of temperature",
+            "Sublimation"
+          ],
+          correctAnswer: 1,
+          explanation: "Between 0°C and 4°C, water contracts upon heating as its open hydrogen-bonded ice-like structure collapses into denser liquid packing, demonstrating negative thermal expansion.\n\n**Correct Option: B.**",
+          points: 1
+        },
+        {
+          id: "W1-M8",
+          number: 8,
+          type: "single",
+          section: "Section C — Thermal Physics & Empirical Laws",
+          question: "An empirical model differs from a first-principles model primarily in that:",
+          options: [
+            "Empirical models are always 100% exact in every condition",
+            "Empirical models rely on fitted experimental data rather than fundamental microscopic physics",
+            "First-principles models cannot be expressed mathematically",
+            "Empirical models apply only to gases"
+          ],
+          correctAnswer: 1,
+          explanation: "Empirical models capture empirical trends without deriving them from first-principles quantum/thermodynamic laws, making them fast to use but valid only within the tested range.\n\n**Correct Option: B.**",
+          points: 1
+        },
+        {
+          id: "W1-M9",
+          number: 9,
+          type: "single",
+          section: "Section C — Thermal Physics & Empirical Laws",
+          question: "The volumetric thermal expansion coefficient β for an isotropic solid is related to its linear coefficient α_L by:",
+          options: [
+            "β = α_L",
+            "β ≈ 2 α_L",
+            "β ≈ 3 α_L",
+            "β = α_L³"
+          ],
+          correctAnswer: 2,
+          explanation: "Because $V = L^3$, differentiating gives $\frac{\Delta V}{V_0} \approx 3 \frac{\Delta L}{L_0} \implies \beta \approx 3\alpha_L$ for small isotropic strains.\n\n**Correct Option: C.**",
+          points: 1
+        },
+        {
+          id: "W1-M10",
+          number: 10,
+          type: "single",
+          section: "Section C — Thermal Physics & Empirical Laws",
+          question: "Why is corrosion a major reliability concern in electronic circuits?",
+          options: [
+            "Corrosion always increases electrical conductivity",
+            "Corrosion forms insulating or resistive oxide films that degrade contacts and open circuit traces",
+            "Corrosion stops all electric fields from existing",
+            "Corrosion only affects plastic casings"
+          ],
+          correctAnswer: 1,
+          explanation: "Oxidation and electrochemical corrosion of copper traces and solder joints cause signal degradation, intermittent connections, and open-circuit failures.\n\n**Correct Option: B.**",
+          points: 1
+        }
+      ]
     },
     {
       id: 2,
       number: 2,
-      title: "Electrical Measurements & Free Electron Gas",
+      title: "Electrical Measurements, AC/DC Impedance & Free Electron Gas",
       lectures: "Lectures 4 - 6",
-      status: "upcoming",
-      summary: "DC/AC conductivity measurement techniques, ideal gas review, and classical free electron gas hypothesis."
+      status: "active",
+      summary: "Charge carrier diversity across circuit components, impedance of pure resistors and capacitors (current leads voltage by 90°), parallel RC high-frequency behavior (Z → 0), empty space in crystalline lattices (25% - 50%), free electron gas density (~10²⁸ m⁻³ vs ideal gas ~10²⁵ m⁻³), thermal equilibrium through collisions, Maxwellian velocity isotropy, and kinetic theory of ideal gases (Cv = 3/2 R constant with T).",
+      studyMaterials: {
+        quickOverview: "Week 2 bridges macroscopic electrical measurements with microscopic particle kinematics. In electrical circuits, current carriers vary by medium: electrons in metallic interconnects, electrons and holes in semiconductors, and mobile ions in liquid electrolytes.\\n\\nUnder AC excitation, electrical impedance accounts for both resistance and frequency-dependent reactance. For an ideal resistor, impedance equals resistance ($Z = R$) and current is in phase with voltage. For an ideal capacitor ($Z_C = 1/j\omega C$), current leads voltage by $90^\circ$; in a parallel R-C network, high frequencies drive capacitive impedance to zero, effectively shorting the circuit ($Z \\to 0$).\\n\\nTurning to atomic packing, crystalline solids consist of 25% to 50% empty interstitial space (FCC/HCP has 26% void, BCC 32%, SC 48%). In metallic conductors, the conduction electron gas is extraordinarily dense ($n \\sim 10^{28}\\text{ m}^{-3}$), exceeding classical ideal gas density ($n \\sim 10^{25}\\text{ m}^{-3}$) by roughly a thousandfold. In thermal equilibrium, electron velocities are isotropic with no preferred direction of motion, maintained by rapid collisions with the lattice. Classical kinetic theory shows that an ideal monoatomic gas has an average translational kinetic energy $\\langle E_k \\rangle = \\frac{3}{2} k_B T$ (increasing with $T$) and a constant specific heat at constant volume $C_V = \\frac{3}{2} R$.",
+        
+        formulaSheet: [
+          { name: "Capacitor AC Impedance", formula: "Z_C = \\frac{1}{j\\omega C} = -j\\frac{1}{\\omega C}", units: "\\Omega", desc: "Current leads voltage by 90° (phase angle +π/2)." },
+          { name: "Parallel R-C Impedance", formula: "Z = \\frac{R \\cdot Z_C}{R + Z_C} = \\frac{R}{1 + j\\omega R C}", units: "\\Omega", desc: "As frequency ω → ∞, capacitive branch shorts the circuit: Z → 0." },
+          { name: "Average Kinetic Energy of Ideal Gas", formula: "\\langle E_k \\rangle = \\frac{3}{2} k_B T", units: "Joules", desc: "Mean translational kinetic energy per molecule is proportional to absolute temperature." },
+          { name: "Specific Heat at Constant Volume (Ideal Gas)", formula: "C_V = \\frac{3}{2} R = \\frac{3}{2} N_A k_B", units: "J/(mol·K)", desc: "Classical kinetic theory predicts temperature-independent constant heat capacity." },
+          { name: "Particle Density Comparison", formula: "n_{\\text{electron}} \\sim 10^{28}\\text{ m}^{-3} \\gg n_{\\text{ideal gas}} \\sim 10^{25}\\text{ m}^{-3}", units: "m⁻³", desc: "Free electron gas is roughly 1000 times denser than an ideal gas at STP." },
+          { name: "Crystalline Empty Space Fraction", formula: "\\text{Void Fraction} = 1 - \\text{APF} \\in [25\\%, 50\\%]", units: "Percentage", desc: "FCC/HCP void is 26%, BCC void is 32%, SC void is 48%." }
+        ],
+
+        lecturesBreakdown: [
+          {
+            lectureNo: 4,
+            title: "Lecture 4: Measuring Electrical Conductivity — DC and AC",
+            bullets: [
+              "Charge Carrier Diversity: Charge carriers are not limited to electrons; they differ across circuit elements (electrons in wires, electrons/holes in diodes/transistors, ions in battery electrolytes).",
+              "AC Impedance & Phase: For an ideal resistor, $Z = R$ and $\\phi = 0$. For a pure capacitor, $i(t) = C \\frac{dv}{dt}$ causes current to lead voltage by exactly $90^\circ$.",
+              "Parallel RC Circuit: Total impedance $Z = \\frac{R}{1 + j\\omega R C}$. At high frequencies ($\\omega \\to \\infty$), capacitive reactance drops to zero, reducing the total circuit impedance to zero."
+            ]
+          },
+          {
+            lectureNo: 5,
+            title: "Lecture 5: The Free Electron Gas Hypothesis",
+            bullets: [
+              "Crystalline Free Volume: Even in tightly packed crystals, atomic spheres leave significant interstitial empty space: 26% in FCC/HCP, 32% in BCC, and 48% in SC (typically 25% - 50%).",
+              "Electron Gas Density: Valence electrons detach from parent atoms to form a free electron gas with $n \\sim 10^{28}\\text{ to } 10^{29}\\text{ m}^{-3}$, making it roughly 1000 times denser than an ideal gas at STP ($2.7 \\times 10^{25}\\text{ m}^{-3}$).",
+              "Thermal Equilibrium via Collisions: Conduction electrons attain thermal equilibrium with their environment through constant scattering collisions with vibrating ionic cores and crystal defects."
+            ]
+          },
+          {
+            lectureNo: 6,
+            title: "Lecture 6: The Ideal Gas & Kinetic Theory",
+            bullets: [
+              "Velocity Isotropy: Molecular collisions randomize directions; ideal gas molecules have no preferred direction of motion in a container.",
+              "Temperature & Translational Energy: The average translational kinetic energy $\\langle E_k \\rangle = \\frac{3}{2} k_B T$ increases linearly with absolute temperature.",
+              "Specific Heat $C_V$: Under classical kinetic theory, the internal energy of a monoatomic ideal gas is $U = \\frac{3}{2} n R T$, meaning specific heat at constant volume $C_V = \\frac{3}{2} R$ remains constant with temperature."
+            ]
+          }
+        ],
+
+        examTraps: [
+          "Circuit Charge Carriers: CAN BE DIFFERENT in different parts of a circuit (not only electrons).",
+          "Capacitor Phase: Current LEADS voltage by 90° (ICE rule: In a Capacitor, Current leads).",
+          "Parallel RC High Frequency: Impedance is ZERO (capacitor acts as an AC short).",
+          "Crystal Free Space: 25% - 50% empty space (FCC = 26%, BCC = 32%, SC = 48%).",
+          "Particle Density: Free electron gas is MORE DENSE than an ideal gas (by ~1000×).",
+          "Ideal Gas Specific Heat: REMAINS CONSTANT with temperature in classical kinetic theory."
+        ]
+      },
+
+      assignmentQuestions: [
+        {
+          id: "W2-A1",
+          number: 1,
+          type: "single",
+          question: "The charge carriers in a circuit are",
+          options: [
+            "The same in all parts of the circuit",
+            "Must be different in different parts of the circuit",
+            "Can be different in different parts of the circuit",
+            "Can only be electrons"
+          ],
+          correctAnswer: 2,
+          explanation: "Different components carry current via different charge carriers: electrons in metallic wires, holes and electrons in semiconductors, and ions in battery electrolytes.\n\n**Correct Option: C (Can be different in different parts of the circuit).**",
+          points: 1
+        },
+        {
+          id: "W2-A2",
+          number: 2,
+          type: "single",
+          question: "Resistance and Impedance are the same for:",
+          options: [
+            "A pure resistor",
+            "A pure capacitor",
+            "A pure inductor",
+            "All of the above"
+          ],
+          correctAnswer: 0,
+          explanation: "For an ideal resistor, voltage and current are in phase ($\\phi = 0^\\circ$) at all frequencies; impedance $Z = R + j(0) = R$.\n\n**Correct Option: A (A pure resistor).**",
+          points: 1
+        },
+        {
+          id: "W2-A3",
+          number: 3,
+          type: "single",
+          question: "For a pure capacitor subject to an AC signal",
+          options: [
+            "Current is in phase with voltage",
+            "Current leads voltage by 90°",
+            "Current leads voltage by 180°",
+            "Current leads voltage by 270°"
+          ],
+          correctAnswer: 1,
+          explanation: "Because $i(t) = C \\frac{dv}{dt}$, for a sinusoidal voltage $v(t) = V_0 \\sin(\\omega t)$, current is $i(t) = \\omega C V_0 \\cos(\\omega t) = I_0 \\sin(\\omega t + 90^\\circ)$, leading voltage by 90°.\n\n**Correct Option: B (Current leads voltage by 90°).**",
+          points: 1
+        },
+        {
+          id: "W2-A4",
+          number: 4,
+          type: "single",
+          question: "When a resistor ‘R’ and a capacitor ‘C’ are in parallel, the high frequency impedance of the circuit is:",
+          options: [
+            "Zero",
+            "Infinite",
+            "R",
+            "C"
+          ],
+          correctAnswer: 0,
+          explanation: "Capacitor impedance is $Z_C = 1/(j\\omega C)$. As frequency $\\omega \\to \\infty$, $Z_C \\to 0$. In parallel, the zero-impedance capacitive branch shorts the entire circuit, making total impedance zero.\n\n**Correct Option: A (Zero).**",
+          points: 1
+        },
+        {
+          id: "W2-A5",
+          number: 5,
+          type: "single",
+          question: "Crystalline solids typically have ‘empty space’ inside them of the order of:",
+          options: [
+            "< 25%",
+            "25% - 50%",
+            "50%-75%",
+            "75%-100%"
+          ],
+          correctAnswer: 1,
+          explanation: "Close-packed crystals have packing factors of 74% (FCC/HCP $\\implies 26\\%$ void), 68% (BCC $\\implies 32\\%$ void), and 52% (SC $\\implies 48\\%$ void). Hence, crystalline solids typically contain 25% - 50% empty interstitial space.\n\n**Correct Option: B (25% - 50%).**",
+          points: 1
+        },
+        {
+          id: "W2-A6",
+          number: 6,
+          type: "single",
+          question: "In terms of particles per cubic meter, compared to an ideal gas, the free electron gas is:",
+          options: [
+            "Equally dense",
+            "Less dense",
+            "More dense",
+            "Has no particles"
+          ],
+          correctAnswer: 2,
+          explanation: "In metals, the free electron gas density is $n \\sim 10^{28}\\text{ to } 10^{29}\\text{ m}^{-3}$, whereas an ideal gas at STP has only $n \\approx 2.7 \\times 10^{25}\\text{ m}^{-3}$ (approx 1000× more dense).\n\n**Correct Option: C (More dense).**",
+          points: 1
+        },
+        {
+          id: "W2-A7",
+          number: 7,
+          type: "single",
+          question: "In a metallic solid, with respect to their surroundings, electrons",
+          options: [
+            "Never attain equilibrium",
+            "Attain equilibrium due to light",
+            "Attain equilibrium due to collisions",
+            "Attain equilibrium due to sound waves"
+          ],
+          correctAnswer: 2,
+          explanation: "Electrons scatter off vibrating ionic cores (phonons) and impurities, transferring momentum and energy to achieve local thermal equilibrium.\n\n**Correct Option: C (Attain equilibrium due to collisions).**",
+          points: 1
+        },
+        {
+          id: "W2-A8",
+          number: 8,
+          type: "single",
+          question: "Ideal gas molecules in a container",
+          options: [
+            "Move towards the top of the container",
+            "Move towards the bottom of the container",
+            "Move towards the middle of the container",
+            "Have no preferred direction of motion"
+          ],
+          correctAnswer: 3,
+          explanation: "By the kinetic theory of gases, random thermal collisions produce an isotropic velocity distribution with no preferred direction of motion.\n\n**Correct Option: D (Have no preferred direction of motion).**",
+          points: 1
+        },
+        {
+          id: "W2-A9",
+          number: 9,
+          type: "single",
+          question: "The average translational kinetic energy of an ideal gas molecule,",
+          options: [
+            "Increases with increase in temperature",
+            "Remains constant with increase in temperature",
+            "Decreases with increase in temperature",
+            "First decreases and stays constant with temperature"
+          ],
+          correctAnswer: 0,
+          explanation: "By the equipartition theorem, average translational kinetic energy per molecule is $\\langle E_k \\rangle = \\frac{3}{2} k_B T$, which increases linearly with absolute temperature.\n\n**Correct Option: A (Increases with increase in temperature).**",
+          points: 1
+        },
+        {
+          id: "W2-A10",
+          number: 10,
+          type: "single",
+          question: "As per the Kinetic Theory of gases, the specific heat at constant volume of an ideal gas",
+          options: [
+            "Increases with increase in temperature",
+            "Remains constant with increase in temperature",
+            "Decreases with increase in temperature",
+            "First decreases and stays constant with temperature"
+          ],
+          correctAnswer: 1,
+          explanation: "For a classical monoatomic ideal gas, total internal energy is $U = \\frac{3}{2} N k_B T$. Differentiating yields $C_V = \\left(\\frac{\\partial U}{\\partial T}\\right)_V = \\frac{3}{2} N k_B$, which is independent of temperature.\n\n**Correct Option: B (Remains constant with increase in temperature).**",
+          points: 1
+        }
+      ],
+
+      masteryExamQuestions: [
+        {
+          id: "W2-M1",
+          number: 1,
+          type: "single",
+          section: "Section A — AC Impedance & Phase Relations",
+          question: "In a series R-L-C circuit at very low frequencies (ω → 0), the total impedance is dominated by:",
+          options: [
+            "The resistor R",
+            "The inductor L",
+            "The capacitor C (impedance approaches infinity)",
+            "Zero impedance"
+          ],
+          correctAnswer: 2,
+          explanation: "Capacitive reactance is $X_C = 1/(\\omega C)$. As frequency $\\omega \\to 0$, $X_C \\to \\infty$, blocking DC and low-frequency current.\n\n**Correct Option: C.**",
+          points: 1
+        },
+        {
+          id: "W2-M2",
+          number: 2,
+          type: "single",
+          section: "Section A — AC Impedance & Phase Relations",
+          question: "For a pure inductor subjected to an AC sinusoidal voltage, current:",
+          options: [
+            "Leads voltage by 90°",
+            "Lags voltage by 90°",
+            "Is in phase with voltage",
+            "Is 180° out of phase with voltage"
+          ],
+          correctAnswer: 1,
+          explanation: "Because $v(t) = L \\frac{di}{dt}$, current lags voltage by $90^\\circ$ in an ideal inductor (ELI rule: Voltage leads Current in an inductor).\n\n**Correct Option: B.**",
+          points: 1
+        },
+        {
+          id: "W2-M3",
+          number: 3,
+          type: "single",
+          section: "Section A — AC Impedance & Phase Relations",
+          question: "Why do battery electrolytes have ionic charge carriers rather than free electrons?",
+          options: [
+            "Electrolytes have infinite band gaps",
+            "Current flows through the physical migration of dissolved positive and negative ions in the solvent",
+            "Electrons cannot exist in liquids",
+            "Ions move faster than electrons"
+          ],
+          correctAnswer: 1,
+          explanation: "Liquid electrolytes dissociate into solvated cations and anions whose physical drift constitutes electrical current.\n\n**Correct Option: B.**",
+          points: 1
+        },
+        {
+          id: "W2-M4",
+          number: 4,
+          type: "single",
+          section: "Section B — Lattice Packing & Free Electron Density",
+          question: "Which of the following crystal structures possesses the lowest percentage of empty space?",
+          options: [
+            "Simple Cubic (SC)",
+            "Body-Centered Cubic (BCC)",
+            "Face-Centered Cubic (FCC)",
+            "Diamond Cubic"
+          ],
+          correctAnswer: 2,
+          explanation: "FCC and HCP are close-packed structures with atomic packing factor of 74% (only 26% empty space), compared to BCC (32% void), SC (48% void), and Diamond Cubic (66% void).\n\n**Correct Option: C.**",
+          points: 1
+        },
+        {
+          id: "W2-M5",
+          number: 5,
+          type: "single",
+          section: "Section B — Lattice Packing & Free Electron Density",
+          question: "The order of magnitude of free electron concentration in typical monovalent metals like copper is:",
+          options: [
+            "10¹⁰ m⁻³",
+            "10¹⁶ m⁻³",
+            "10²² m⁻³",
+            "10²⁸ m⁻³"
+          ],
+          correctAnswer: 3,
+          explanation: "Copper has roughly one conduction electron per atom and atomic density $\\sim 8.5 \\times 10^{28}\\text{ atoms/m}^3$, giving $n \\approx 8.5 \\times 10^{28}\\text{ electrons/m}^3$.\n\n**Correct Option: D.**",
+          points: 1
+        },
+        {
+          id: "W2-M6",
+          number: 6,
+          type: "single",
+          section: "Section B — Lattice Packing & Free Electron Density",
+          question: "In the classical Drude hypothesis, between successive collisions, conduction electrons move:",
+          options: [
+            "In circular orbits around individual atoms",
+            "In straight lines at constant velocity (in zero electric field)",
+            "In parabolic arcs continuously without collisions",
+            "They do not move at all"
+          ],
+          correctAnswer: 1,
+          explanation: "Between collisions, electrons are treated as free particles moving in straight lines at constant speed, with their momentum randomized instantaneously upon collision.\n\n**Correct Option: B.**",
+          points: 1
+        },
+        {
+          id: "W2-M7",
+          number: 7,
+          type: "single",
+          section: "Section C — Kinetic Theory of Gases",
+          question: "According to Maxwell-Boltzmann statistics, the root-mean-square speed v_rms of an ideal gas molecule of mass m at temperature T is:",
+          options: [
+            "√(k_B T / m)",
+            "√(2 k_B T / m)",
+            "√(3 k_B T / m)",
+            "3 k_B T / m"
+          ],
+          correctAnswer: 2,
+          explanation: "From $\\frac{1}{2} m v_{\\text{rms}}^2 = \\frac{3}{2} k_B T$, solving for $v_{\\text{rms}}$ gives $\\sqrt{\\frac{3 k_B T}{m}}$.\n\n**Correct Option: C.**",
+          points: 1
+        },
+        {
+          id: "W2-M8",
+          number: 8,
+          type: "single",
+          section: "Section C — Kinetic Theory of Gases",
+          question: "Why does the specific heat at constant volume C_V of an ideal monoatomic gas remain constant with temperature?",
+          options: [
+            "It has no kinetic energy",
+            "Monoatomic gases have only 3 translational degrees of freedom which are fully active at all temperatures",
+            "The gas molecules lose mass as temperature rises",
+            "Pressure is kept at zero"
+          ],
+          correctAnswer: 1,
+          explanation: "Monoatomic ideal gas molecules possess only 3 translational degrees of freedom without rotational or vibrational modes, so $U = \\frac{3}{2} R T$ and $C_V = \\frac{3}{2} R$ is strictly constant.\n\n**Correct Option: B.**",
+          points: 1
+        },
+        {
+          id: "W2-M9",
+          number: 9,
+          type: "single",
+          section: "Section C — Kinetic Theory of Gases",
+          question: "The pressure P exerted by an ideal gas of number density n and mean-square speed ⟨v²⟩ is given by:",
+          options: [
+            "P = n m ⟨v²⟩",
+            "P = (1/2) n m ⟨v²⟩",
+            "P = (1/3) n m ⟨v²⟩",
+            "P = (2/3) n m ⟨v²⟩"
+          ],
+          correctAnswer: 2,
+          explanation: "Kinetic theory pressure formula: $P = \\frac{1}{3} n m \\langle v^2 \\rangle$.\n\n**Correct Option: C.**",
+          points: 1
+        },
+        {
+          id: "W2-M10",
+          number: 10,
+          type: "single",
+          section: "Section C — Kinetic Theory of Gases",
+          question: "In kinetic theory, the assumption of velocity isotropy means:",
+          options: [
+            "⟨v_x²⟩ = ⟨v_y²⟩ = ⟨v_z²⟩ = (1/3) ⟨v²⟩",
+            "Molecules move only along the x-axis",
+            "The speed of every molecule is identical",
+            "Molecules cannot collide"
+          ],
+          correctAnswer: 0,
+          explanation: "Random collision trajectories distribute thermal energy equally across all 3 spatial directions, so $\\langle v_x^2 \\rangle = \\langle v_y^2 \\rangle = \\langle v_z^2 \\rangle = \\frac{1}{3} \\langle v^2 \\rangle$.\n\n**Correct Option: A.**",
+          points: 1
+        }
+      ]
     },
     {
       id: 3,

@@ -4,7 +4,7 @@
 
 // Application State
 const STATE = {
-  currentWeek: 12,
+  currentWeek: 1,
   activeTab: 'assignment', // 'study', 'assignment', 'mastery', 'history'
   activeQuizType: 'assignment',
   instantFeedbackPref: false,
@@ -32,17 +32,52 @@ const STATE = {
 // Storage Keys
 const STORAGE_KEY_HISTORY = 'nptel_pom_quiz_history_v1';
 const STORAGE_KEY_FEEDBACK_PREF = 'nptel_pom_feedback_pref';
+const STORAGE_KEY_THEME = 'nptel_pom_theme_pref';
 
 // Initialize App
 document.addEventListener('DOMContentLoaded', () => {
+  initTheme();
   loadLocalHistory();
   initWeekNav();
   initTabs();
   renderWeekInfo();
   renderStudyMaterials();
-  startQuiz('assignment'); // Default to Week 3 Assignment
+  startQuiz('assignment'); // Default to Week 1 Assignment
   initFormulaCopy();
 });
+
+// Theme Toggle & Persistence
+function initTheme() {
+  const saved = localStorage.getItem(STORAGE_KEY_THEME) || 'tcs';
+  applyTheme(saved);
+
+  const toggleBtn = document.getElementById('theme-toggle-btn');
+  if (toggleBtn) {
+    toggleBtn.addEventListener('click', () => {
+      const current = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'tcs';
+      const nextTheme = current === 'dark' ? 'tcs' : 'dark';
+      applyTheme(nextTheme);
+    });
+  }
+}
+
+function applyTheme(theme) {
+  const iconEl = document.getElementById('theme-icon');
+  const textEl = document.getElementById('theme-text');
+
+  if (theme === 'dark') {
+    document.documentElement.setAttribute('data-theme', 'dark');
+    if (iconEl) iconEl.textContent = '🌙';
+    if (textEl) textEl.textContent = 'Dark Mode';
+  } else {
+    document.documentElement.removeAttribute('data-theme');
+    if (iconEl) iconEl.textContent = '☀️';
+    if (textEl) textEl.textContent = 'TCS Exam Mode';
+  }
+  try {
+    localStorage.setItem(STORAGE_KEY_THEME, theme);
+  } catch (e) {}
+}
 
 // Load persistent test history
 function loadLocalHistory() {
@@ -330,6 +365,7 @@ function createQuizSession(quizType, onlyMissed = false) {
     currentIndex: 0,
     answers: {},
     flags: new Set(),
+    visited: new Set([0]),
     instantFeedback: STATE.instantFeedbackPref,
     timerSeconds: 0,
     timerInterval: null,
@@ -406,6 +442,9 @@ function renderQuizView() {
     return;
   }
 
+  if (!STATE.quiz.visited) STATE.quiz.visited = new Set();
+  STATE.quiz.visited.add(STATE.quiz.currentIndex);
+
   const total = STATE.quiz.questions.length;
   const current = STATE.quiz.currentIndex + 1;
   const progressPct = Math.round((current / total) * 100);
@@ -421,17 +460,17 @@ function renderQuizView() {
         <!-- Top Controls & Progress -->
         <div class="quiz-top-bar">
           <div class="progress-info">
-            <span style="font-weight: 700; color: #fff;">Q ${current} of ${total}</span>
+            <span style="font-weight: 700; color: var(--text-heading);">Q ${current} of ${total}</span>
             <div class="progress-bar-wrap">
               <div class="progress-bar-fill" style="width: ${progressPct}%;"></div>
             </div>
             <span style="font-size: 0.8rem; color: var(--text-dim);">${progressPct}%</span>
           </div>
 
-          <div style="display: flex; align-items: center; gap: 12px;">
+          <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
             <label style="display: flex; align-items: center; gap: 6px; font-size: 0.8rem; color: var(--text-muted); cursor: pointer;">
               <input type="checkbox" id="${panePrefix}-feedback-toggle" ${STATE.quiz.instantFeedback ? 'checked' : ''}>
-              <span>Study Mode (Instant Check)</span>
+              <span>Study Mode (Instant Solution)</span>
             </label>
             <div class="quiz-timer">
               ⏱️ <span class="quiz-timer-val">00:00</span>
@@ -504,14 +543,14 @@ function renderQuizView() {
             <button class="btn btn-secondary" id="${panePrefix}-prev-btn" ${current === 1 ? 'disabled style="opacity:0.4; cursor:not-allowed;"' : ''}>
               ← Previous
             </button>
-            <button class="btn btn-secondary" id="${panePrefix}-next-btn" ${current === total ? 'disabled style="opacity:0.4; cursor:not-allowed;"' : ''}>
-              Next →
+            <button class="btn btn-primary" id="${panePrefix}-next-btn" ${current === total ? 'disabled style="opacity:0.4; cursor:not-allowed;"' : ''}>
+              Save & Next →
             </button>
           </div>
 
-          <div style="display: flex; gap: 10px;">
+          <div style="display: flex; gap: 8px;">
             <button class="btn btn-outline" id="${panePrefix}-clear-btn">Clear Choice</button>
-            <button class="btn btn-success" id="${panePrefix}-submit-btn">Finish & View Score</button>
+            <button class="btn btn-success" id="${panePrefix}-submit-btn">Submit Exam</button>
           </div>
         </div>
       </div>
@@ -533,34 +572,47 @@ function renderQuizView() {
               const isAns = STATE.quiz.answers[ques.id] !== undefined && 
                 (Array.isArray(STATE.quiz.answers[ques.id]) ? STATE.quiz.answers[ques.id].length > 0 : true);
               const isFlg = STATE.quiz.flags.has(ques.id);
+              const isVisited = STATE.quiz.visited && STATE.quiz.visited.has(pIdx);
 
               let cls = 'pal-btn';
               if (isCurr) cls += ' current';
-              if (isAns) cls += ' answered';
-              if (isFlg) cls += ' flagged';
+              if (isAns) {
+                cls += ' answered';
+              } else if (isFlg) {
+                cls += ' flagged';
+              } else if (isVisited) {
+                cls += ' visited-unanswered';
+              }
+              if (isAns && isFlg) {
+                cls += ' flagged';
+              }
 
-              return `<button class="${cls}" data-goto-idx="${pIdx}">${num}</button>`;
+              return `<button class="${cls}" data-goto-idx="${pIdx}" title="Question ${num}">${num}</button>`;
             }).join('')}
           </div>
 
           <div class="palette-legend">
             <div class="legend-item">
-              <div class="legend-dot" style="background: var(--primary);"></div>
+              <div class="legend-dot" style="background: var(--tcs-answered);"></div>
               <span>Answered</span>
             </div>
             <div class="legend-item">
-              <div class="legend-dot" style="border: 1px solid var(--warning);"></div>
-              <span>Flagged for Review</span>
+              <div class="legend-dot" style="background: var(--tcs-not-answered);"></div>
+              <span>Not Answered</span>
             </div>
             <div class="legend-item">
-              <div class="legend-dot" style="background: rgba(255,255,255,0.08);"></div>
-              <span>Unanswered</span>
+              <div class="legend-dot" style="background: var(--tcs-review);"></div>
+              <span>Marked for Review</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-dot" style="background: var(--tcs-not-visited-bg); border: 1px solid var(--border-color);"></div>
+              <span>Not Visited</span>
             </div>
           </div>
         </div>
 
         <div class="card" style="padding: 16px;">
-          <div style="font-size: 0.82rem; font-weight: 700; color: #fff; margin-bottom: 6px;">💡 Exam Strategy</div>
+          <div style="font-size: 0.82rem; font-weight: 700; color: var(--text-heading); margin-bottom: 6px;">💡 Exam Strategy</div>
           <p style="font-size: 0.78rem; color: var(--text-muted); line-height: 1.45;">
             Practice both in <strong>Study Mode</strong> (to learn derivations) and standard <strong>Exam Mode</strong> (to build speed and test recall).
           </p>
@@ -836,7 +888,7 @@ function renderScorecard(pane, prefix) {
 
     <!-- Detailed Solutions Review Block -->
     <div id="${prefix}-solutions-review" style="margin-top: 32px;">
-      <h3 style="font-size: 1.25rem; font-weight: 700; color: #fff; margin-bottom: 18px; display: flex; align-items: center; gap: 8px;">
+      <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--text-heading); margin-bottom: 18px; display: flex; align-items: center; gap: 8px;">
         <span>📝 Complete Questions, Solutions & Derivations</span>
       </h3>
       <div style="display: flex; flex-direction: column; gap: 20px;">
@@ -941,10 +993,10 @@ function renderHistoryTable() {
 
   container.innerHTML = `
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-      <h3 style="font-size: 1.1rem; font-weight: 700; color: #fff;">Previous Test Attempts</h3>
+      <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--text-heading);">Previous Test Attempts</h3>
       <button class="btn btn-outline btn-sm" id="clear-history-btn">Clear History</button>
     </div>
-    <div style="overflow-x: auto;">
+    <div class="table-responsive">
       <table class="history-table">
         <thead>
           <tr>
@@ -962,7 +1014,7 @@ function renderHistoryTable() {
             return `
               <tr>
                 <td>${escapeHtml(item.date)}</td>
-                <td><strong style="color: #fff;">${escapeHtml(item.testType)}</strong> (Week ${item.weekNumber})</td>
+                <td><strong style="color: var(--text-heading);">${escapeHtml(item.testType)}</strong> (Week ${item.weekNumber})</td>
                 <td>${item.score} / ${item.maxScore}</td>
                 <td>
                   <span class="badge ${item.percentage >= 80 ? 'badge-success' : (item.percentage >= 50 ? 'badge-cyan' : 'badge-warning')}">

@@ -35,14 +35,21 @@
         </div>
       </div>
 
-      <div class="header-stats">
-        <div class="stat-pill">
-          <div class="stat-label">Tests Taken</div>
-          <div class="stat-value" id="stat-tests-count">0</div>
-        </div>
-        <div class="stat-pill">
-          <div class="stat-label">Best Score</div>
-          <div class="stat-value" id="stat-best-score">0%</div>
+      <div class="header-actions">
+        <button class="theme-toggle-btn" id="theme-toggle-btn" title="Toggle TCS Exam Bright / Dark Mode" aria-label="Toggle theme">
+          <span id="theme-icon">☀️</span>
+          <span id="theme-text">TCS Exam Mode</span>
+        </button>
+
+        <div class="header-stats">
+          <div class="stat-pill">
+            <div class="stat-label">Tests Taken</div>
+            <div class="stat-value" id="stat-tests-count">0</div>
+          </div>
+          <div class="stat-pill">
+            <div class="stat-label">Best Score</div>
+            <div class="stat-value" id="stat-best-score">0%</div>
+          </div>
         </div>
       </div>
     </header>
@@ -53,15 +60,15 @@
     </nav>
 
     <!-- Current Week Context Info Card -->
-    <div class="card" style="margin-bottom: 24px; padding: 18px 24px; border-left: 4px solid var(--primary);">
+    <div class="card week-overview-card" style="margin-bottom: 24px; padding: 18px 24px; border-left: 4px solid var(--primary);">
       <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
-        <h2 id="current-week-title" style="font-size: 1.15rem; font-weight: 700; color: #fff;">
-          Week 3: Drude Model — Electrical & Thermal Conductivity
+        <h2 id="current-week-title" style="font-size: 1.15rem; font-weight: 700; color: var(--text-heading);">
+          Week 1: Introduction, Properties of Materials & Thermal Expansion
         </h2>
         <span class="badge badge-cyan">Exam Ready Mode</span>
       </div>
       <p id="current-week-summary" style="font-size: 0.88rem; color: var(--text-muted); margin-top: 6px;">
-        Classical electron transport, Ohm's law derivation, thermal conductivity, Wiedemann-Franz law, and model limitations.
+        Overview of material properties, scientific vs engineering models, thermal expansion, stress-strain behavior, and bonding asymmetry.
       </p>
     </div>
 
