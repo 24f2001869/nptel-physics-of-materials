@@ -2,6 +2,9 @@
 node_modules/
 package-lock.json
 
+# Other course folders
+ieor/
+
 # Logs & temp
 *.log
 *.zip
