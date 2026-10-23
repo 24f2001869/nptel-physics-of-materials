@@ -42,6 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initTabs();
   renderWeekInfo();
   renderStudyMaterials();
+  renderStrategyView();
   startQuiz('assignment'); // Default to Week 1 Assignment
   initFormulaCopy();
 });
@@ -194,6 +195,9 @@ function switchTab(tabId, isInternal = false) {
   if (tabId === 'history') {
     renderHistoryTable();
   } else if (tabId === 'study') {
+    renderMath();
+  } else if (tabId === 'strategy') {
+    renderStrategyView();
     renderMath();
   }
 }
@@ -1077,3 +1081,364 @@ function escapeHtml(str) {
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#039;');
 }
+
+// ===================================================================
+// EXAM BLUEPRINT & HIGH-YIELD CALCULATOR LOGIC
+// ===================================================================
+
+const METAL_PRESETS = [
+  { name: 'Copper (Cu)', n: 8.49, label: 'Standard metal in Drude/Sommerfeld model' },
+  { name: 'Iron (Fe)', n: 17.0, label: 'Week 9 Assignment metal (EF = 11.1 eV, TF = 12.7 × 10⁴ K)' },
+  { name: 'Aluminium (Al)', n: 18.1, label: 'Trivalent metal (Z = 3, EF = 11.7 eV)' },
+  { name: 'Sodium (Na)', n: 2.65, label: 'Monovalent alkali metal (EF = 3.24 eV)' },
+  { name: 'Silver (Ag)', n: 5.86, label: 'Highest electrical conductivity (EF = 5.49 eV)' },
+  { name: 'Gold (Au)', n: 5.90, label: 'Noble metal (EF = 5.53 eV)' }
+];
+
+window.jumpToWeek = function(weekNum) {
+  STATE.currentWeek = weekNum;
+  document.querySelectorAll('.week-btn').forEach(b => {
+    b.classList.toggle('active', b.textContent.includes(`Week ${weekNum}`));
+  });
+  renderWeekInfo();
+  renderStudyMaterials();
+  STATE.sessions = { assignment: null, mastery: null };
+  switchTab('assignment');
+};
+
+function renderStrategyView() {
+  const container = document.getElementById('strategy-view-container');
+  if (!container) return;
+
+  container.innerHTML = `
+    <div class="strategy-container">
+      <!-- Top Blueprint Header Banner -->
+      <div class="blueprint-hero">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 12px; margin-bottom: 12px;">
+          <div>
+            <span class="badge badge-primary" style="margin-bottom: 8px;">IIT Madras • Course 113106040</span>
+            <h2 style="font-size: 1.35rem; font-weight: 800; color: var(--text-heading); margin-top: 4px;">
+              🎯 NPTEL Physics of Materials: Exam Blueprint & Weightage Distribution
+            </h2>
+          </div>
+          <span class="badge badge-warning" style="font-size: 0.82rem; padding: 6px 14px;">
+            ⚠️ Exam Skewed to Weeks 5–7
+          </span>
+        </div>
+        <p style="font-size: 0.92rem; color: var(--text-muted); line-height: 1.6; max-width: 960px;">
+          Historical student feedback and syllabus analyses reveal that questions are <strong>not evenly distributed</strong>. Prof. Prathap Haridoss concentrates the bulk of advanced <strong>Numerical Answer Type (NAT)</strong> and <strong>Multiple Select Questions (MSQs)</strong> in the second half of the course.
+        </p>
+        <div style="margin-top: 14px; padding: 12px 16px; background: var(--bg-card); border-radius: var(--radius-md); border: 1px solid var(--border-color); display: flex; align-items: center; gap: 10px;">
+          <span style="font-size: 1.3rem;">💡</span>
+          <span style="font-size: 0.88rem; color: var(--text-heading); font-weight: 600;">
+            <strong>Pro-Strategy for Revision:</strong> If you are short on time, do not study chronologically! Start backward from <strong>Weeks 5, 6, and 7</strong>. Master the numericals there first, as they dictate the hardest and highest-scoring segments of the paper.
+          </span>
+        </div>
+      </div>
+
+      <!-- The 3 Core Weightage Zones -->
+      <div class="strategy-zones-grid">
+        <!-- Zone 1: High Weightage -->
+        <div class="weightage-card high-zone">
+          <div>
+            <span class="zone-badge">🌟 High-Weightage Zone (~55%)</span>
+            <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--text-heading); margin-bottom: 8px;">
+              Weeks 5, 6 & 7 — Mathematical Core
+            </h3>
+            <p style="font-size: 0.84rem; color: var(--text-muted); margin-bottom: 12px; line-height: 1.5;">
+              Dominates the exam with complex multi-step numericals and deep conceptual MSQs:
+            </p>
+            <ul class="bullet-list" style="margin-bottom: 16px;">
+              <li><strong>Week 5:</strong> Sommerfeld Model & Density of States $g(E)$ in 1D, 2D, 3D.</li>
+              <li><strong>Week 6:</strong> Fermi Energy ($E_F$), Fermi Temp ($T_F$), Reciprocal Space & Brillouin Zones.</li>
+              <li><strong>Week 7:</strong> Allowed vs forbidden bands, Tight Binding Approximation, Band Gaps.</li>
+            </ul>
+          </div>
+          <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+            <button class="btn btn-outline btn-sm" onclick="jumpToWeek(5)">Jump to W5</button>
+            <button class="btn btn-outline btn-sm" onclick="jumpToWeek(6)">Jump to W6</button>
+            <button class="btn btn-outline btn-sm" onclick="jumpToWeek(7)">Jump to W7</button>
+          </div>
+        </div>
+
+        <!-- Zone 2: Moderate Weightage -->
+        <div class="weightage-card med-zone">
+          <div>
+            <span class="zone-badge">⚖️ Moderate Weightage Zone (~30%)</span>
+            <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--text-heading); margin-bottom: 8px;">
+              Weeks 3 & 4 — Bridging Classical to Quantum
+            </h3>
+            <p style="font-size: 0.84rem; color: var(--text-muted); margin-bottom: 12px; line-height: 1.5;">
+              Heavy focus on direct formula applications and identifying model limitations:
+            </p>
+            <ul class="bullet-list" style="margin-bottom: 16px;">
+              <li><strong>Week 3:</strong> Drude Model electrical/thermal conductivity & specific heat failures.</li>
+              <li><strong>Week 4:</strong> Wiedemann-Franz Law, Lorenz number ($L = 2.44 \times 10^{-8}$), Maxwell-Boltzmann vs Fermi-Dirac.</li>
+            </ul>
+          </div>
+          <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+            <button class="btn btn-outline btn-sm" onclick="jumpToWeek(3)">Jump to W3</button>
+            <button class="btn btn-outline btn-sm" onclick="jumpToWeek(4)">Jump to W4</button>
+          </div>
+        </div>
+
+        <!-- Zone 3: Low Weightage -->
+        <div class="weightage-card low-zone">
+          <div>
+            <span class="zone-badge">📉 Low Weightage Zone (~15%)</span>
+            <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--text-heading); margin-bottom: 8px;">
+              Weeks 1, 2 & 8 — Foundations & Summaries
+            </h3>
+            <p style="font-size: 0.84rem; color: var(--text-muted); margin-bottom: 12px; line-height: 1.5;">
+              Direct recall questions and conceptual comparative models:
+            </p>
+            <ul class="bullet-list" style="margin-bottom: 16px;">
+              <li><strong>Weeks 1 & 2:</strong> Thermal expansion asymmetry ($E$ vs $r$), macroscopic vs microscopic, AC impedance.</li>
+              <li><strong>Week 8:</strong> Free Electron vs Tight Binding comparison.</li>
+            </ul>
+          </div>
+          <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+            <button class="btn btn-outline btn-sm" onclick="jumpToWeek(1)">Jump to W1</button>
+            <button class="btn btn-outline btn-sm" onclick="jumpToWeek(2)">Jump to W2</button>
+            <button class="btn btn-outline btn-sm" onclick="jumpToWeek(8)">Jump to W8</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive Fermi Gas & Density of States Calculator -->
+      <div class="calc-wrapper">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 8px;">
+          <div>
+            <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--text-heading);">
+              ⚡ Interactive High-Yield Physics Calculator
+            </h3>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">
+              Practice exact mathematical steps expected on the exam for $k_F$, $E_F$, $T_F$, $v_F$, and $g(E_F)$.
+            </p>
+          </div>
+          <span class="badge badge-cyan">Sommerfeld Free Electron Model</span>
+        </div>
+
+        <!-- Metal Presets -->
+        <div class="preset-container">
+          <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-dim); text-transform: uppercase;">
+            Metal Presets:
+          </span>
+          ${METAL_PRESETS.map((m, idx) => `
+            <button class="preset-btn ${idx === 0 ? 'active' : ''}" data-idx="${idx}" title="${m.label}">
+              ${m.name}
+            </button>
+          `).join('')}
+        </div>
+
+        <!-- Inputs Grid -->
+        <div class="calc-inputs-grid">
+          <div class="calc-input-box">
+            <label for="calc-n-input">
+              Conduction Electron Density $n$ ($\times 10^{28}\\text{ m}^{-3}$)
+            </label>
+            <input type="number" id="calc-n-input" value="8.49" step="0.01" min="0.1" max="50">
+          </div>
+          <div class="calc-input-box">
+            <label>Selected Metal System</label>
+            <div id="calc-metal-desc" style="padding: 10px 14px; background: var(--bg-secondary); border-radius: var(--radius-md); font-size: 0.88rem; font-weight: 600; color: var(--text-main);">
+              Copper (Cu) — 8.49 × 10²⁸ m⁻³ (Standard metal in Drude/Sommerfeld model)
+            </div>
+          </div>
+        </div>
+
+        <!-- Real-Time Calculated Results Grid -->
+        <div class="calc-results-grid">
+          <div class="calc-result-card">
+            <div class="calc-res-label">Fermi Wavevector $k_F$</div>
+            <div class="calc-res-value" id="res-kf">1.36 Å⁻¹</div>
+            <div class="calc-res-sub" id="res-kf-sub">1.36 × 10¹⁰ m⁻¹</div>
+          </div>
+          <div class="calc-result-card">
+            <div class="calc-res-label">Fermi Energy $E_F$</div>
+            <div class="calc-res-value" id="res-ef">7.05 eV</div>
+            <div class="calc-res-sub" id="res-ef-sub">1.13 × 10⁻¹⁸ J</div>
+          </div>
+          <div class="calc-result-card">
+            <div class="calc-res-label">Fermi Temperature $T_F$</div>
+            <div class="calc-res-value" id="res-tf">8.18 × 10⁴ K</div>
+            <div class="calc-res-sub" id="res-tf-sub">Degenerate: TF ≫ 300 K</div>
+          </div>
+          <div class="calc-result-card">
+            <div class="calc-res-label">Fermi Velocity $v_F$</div>
+            <div class="calc-res-value" id="res-vf">1.57 × 10⁶ m/s</div>
+            <div class="calc-res-sub" id="res-vf-sub">≈ 0.52% speed of light</div>
+          </div>
+        </div>
+
+        <!-- Step-by-Step Mathematical Working -->
+        <div class="explanation-box" style="margin-top: 10px; background: var(--bg-card); border: 1px solid var(--border-color);">
+          <div class="explanation-title" style="color: var(--primary);">
+            <span>📐 Step-by-Step Mathematical Derivation & Exact Substitution</span>
+          </div>
+          <div class="explanation-body" id="calc-math-breakdown" style="font-size: 0.88rem; line-height: 1.6;">
+            <!-- Injected by calculator logic -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Density of States Dimensionality Comparison -->
+      <div class="card">
+        <h3 class="card-title">
+          <span>📊 Density of States $g(E)$ Dimensionality Scaling Laws (High-Yield MSQ)</span>
+        </h3>
+        <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 16px;">
+          A favorite testing point of Prof. Haridoss is the energy dependence of density of states across 1D, 2D, and 3D systems:
+        </p>
+        <div class="dim-comparison-grid">
+          <div class="dim-card" style="border-left: 4px solid #ea580c;">
+            <h4>
+              <span>1D Quantum Wire</span>
+              <span class="dim-badge">1-Dimension</span>
+            </h4>
+            <div style="font-family: var(--font-mono); font-size: 1rem; color: #ea580c; font-weight: 700; margin: 8px 0;">
+              $$g_{1D}(E) \\propto E^{-1/2}$$
+            </div>
+            <p style="font-size: 0.82rem; color: var(--text-muted); line-height: 1.45;">
+              Density of states <strong>diverges at the band edge</strong> ($E \\to 0$) and <em>decreases</em> as energy increases.
+            </p>
+          </div>
+
+          <div class="dim-card" style="border-left: 4px solid #0284c7;">
+            <h4>
+              <span>2D Quantum Well</span>
+              <span class="dim-badge">2-Dimensions</span>
+            </h4>
+            <div style="font-family: var(--font-mono); font-size: 1rem; color: #0284c7; font-weight: 700; margin: 8px 0;">
+              $$g_{2D}(E) = \\frac{mA}{\\pi\\hbar^2} \\propto E^0$$
+            </div>
+            <p style="font-size: 0.82rem; color: var(--text-muted); line-height: 1.45;">
+              Density of states is a <strong>step-function / constant</strong> completely independent of energy!
+            </p>
+          </div>
+
+          <div class="dim-card" style="border-left: 4px solid #16a34a;">
+            <h4>
+              <span>3D Bulk Metal</span>
+              <span class="dim-badge">3-Dimensions</span>
+            </h4>
+            <div style="font-family: var(--font-mono); font-size: 1rem; color: #16a34a; font-weight: 700; margin: 8px 0;">
+              $$g_{3D}(E) \\propto E^{1/2}$$
+            </div>
+            <p style="font-size: 0.82rem; color: var(--text-muted); line-height: 1.45;">
+              Parabolic dependence: density of states starts at zero and <strong>increases monotonically with $\\sqrt{E}$</strong>.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  initStrategyCalculator();
+}
+
+function initStrategyCalculator() {
+  const nInput = document.getElementById('calc-n-input');
+  const presetBtns = document.querySelectorAll('.preset-btn');
+  const descEl = document.getElementById('calc-metal-desc');
+
+  presetBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      presetBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const idx = parseInt(btn.dataset.idx, 10);
+      const metal = METAL_PRESETS[idx];
+      if (metal && nInput) {
+        nInput.value = metal.n;
+        if (descEl) descEl.textContent = `${metal.name} — ${metal.n} × 10²⁸ m⁻³ (${metal.label})`;
+        recalculateFermiGas();
+      }
+    });
+  });
+
+  if (nInput) {
+    nInput.addEventListener('input', () => {
+      presetBtns.forEach(b => b.classList.remove('active'));
+      if (descEl) descEl.textContent = `Custom Electron Density: ${nInput.value} × 10²⁸ m⁻³`;
+      recalculateFermiGas();
+    });
+  }
+
+  recalculateFermiGas();
+}
+
+function recalculateFermiGas() {
+  const nInput = document.getElementById('calc-n-input');
+  if (!nInput) return;
+
+  const nVal = parseFloat(nInput.value) || 8.49;
+  const n = nVal * 1e28; // m^-3
+
+  // Physical Constants
+  const hbar = 1.054571817e-34; // J s
+  const m = 9.1093837e-31;      // kg
+  const kB = 1.380649e-23;       // J/K
+  const qe = 1.602176634e-19;    // C (J/eV)
+  const c = 2.99792458e8;        // m/s
+
+  // kF = (3 * pi^2 * n)^(1/3)
+  const kF = Math.cbrt(3 * Math.PI * Math.PI * n);
+  const kF_Angstrom = kF / 1e10; // in Angstrom^-1
+
+  // EF = (hbar^2 * kF^2) / (2 * m)
+  const EF_J = (hbar * hbar * kF * kF) / (2 * m);
+  const EF_eV = EF_J / qe;
+
+  // TF = EF / kB
+  const TF = EF_J / kB;
+
+  // vF = (hbar * kF) / m
+  const vF = (hbar * kF) / m;
+  const vF_pct_c = (vF / c) * 100;
+
+  // Update UI elements
+  const elKf = document.getElementById('res-kf');
+  const elKfSub = document.getElementById('res-kf-sub');
+  const elEf = document.getElementById('res-ef');
+  const elEfSub = document.getElementById('res-ef-sub');
+  const elTf = document.getElementById('res-tf');
+  const elTfSub = document.getElementById('res-tf-sub');
+  const elVf = document.getElementById('res-vf');
+  const elVfSub = document.getElementById('res-vf-sub');
+  const elMath = document.getElementById('calc-math-breakdown');
+
+  if (elKf) elKf.textContent = `${kF_Angstrom.toFixed(2)} Å⁻¹`;
+  if (elKfSub) elKfSub.textContent = `${(kF / 1e10).toFixed(3)} × 10¹⁰ m⁻¹`;
+
+  if (elEf) elEf.textContent = `${EF_eV.toFixed(2)} eV`;
+  if (elEfSub) elEfSub.textContent = `${(EF_J * 1e18).toFixed(2)} × 10⁻¹⁸ J`;
+
+  if (elTf) elTf.textContent = `${(TF / 1e4).toFixed(2)} × 10⁴ K`;
+  if (elTfSub) elTfSub.textContent = `(${Math.round(TF).toLocaleString()} K) ≫ 300 K`;
+
+  if (elVf) elVf.textContent = `${(vF / 1e6).toFixed(2)} × 10⁶ m/s`;
+  if (elVfSub) elVfSub.textContent = `≈ ${vF_pct_c.toFixed(2)}% speed of light`;
+
+  if (elMath) {
+    elMath.innerHTML = `
+      <p><strong>1. Fermi Wavevector ($k_F$):</strong></p>
+      <p style="margin-left: 10px; font-family: var(--font-mono); margin-bottom: 6px;">
+        $$k_F = (3\\pi^2 n)^{1/3} = (3 \\times \\pi^2 \\times ${nVal} \\times 10^{28})^{1/3} = ${(kF / 1e10).toFixed(3)} \\times 10^{10}\\text{ m}^{-1} = ${kF_Angstrom.toFixed(2)}\\text{ \\AA}^{-1}$$
+      </p>
+      <p><strong>2. Fermi Energy ($E_F$):</strong></p>
+      <p style="margin-left: 10px; font-family: var(--font-mono); margin-bottom: 6px;">
+        $$E_F = \\frac{\\hbar^2 k_F^2}{2m} = \\frac{(1.055 \\times 10^{-34})^2 \\times (${(kF / 1e10).toFixed(3)} \\times 10^{10})^2}{2 \\times 9.109 \\times 10^{-31}} = ${(EF_J * 1e18).toFixed(3)} \\times 10^{-18}\\text{ J} = ${EF_eV.toFixed(2)}\\text{ eV}$$
+      </p>
+      <p><strong>3. Fermi Temperature ($T_F$):</strong></p>
+      <p style="margin-left: 10px; font-family: var(--font-mono); margin-bottom: 6px;">
+        $$T_F = \\frac{E_F}{k_B} = \\frac{${(EF_J * 1e18).toFixed(3)} \\times 10^{-18}\\text{ J}}{1.381 \\times 10^{-23}\\text{ J/K}} = ${(TF / 1e4).toFixed(2)} \\times 10^4\\text{ K} \\quad (${Math.round(TF).toLocaleString()}\\text{ K})$$
+      </p>
+      <p><strong>4. Fermi Velocity ($v_F$):</strong></p>
+      <p style="margin-left: 10px; font-family: var(--font-mono);">
+        $$v_F = \\frac{\\hbar k_F}{m} = ${(vF / 1e6).toFixed(2)} \\times 10^6\\text{ m/s} \\quad (${vF_pct_c.toFixed(2)}\\%\\text{ of } c)$$
+      </p>
+    `;
+    renderMath();
+  }
+}
+
