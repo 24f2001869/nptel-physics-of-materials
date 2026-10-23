@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NPTEL Physics of Materials | Exam Prep & Mastery Hub</title>
+  <meta name="description" content="Interactive exam practice, assignment tests, formula sheet, and high-yield study materials for NPTEL Course 113106040 Physics of Materials.">
+  <link rel="stylesheet" href="./styles.css">
+
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+
+  <!-- KaTeX for crisp LaTeX formulas -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+</head>
+<body>
+
+  <div class="app-container">
+
+    <!-- Top App Header -->
+    <header class="app-header">
+      <div class="brand-section">
+        <div class="brand-icon">⚛️</div>
+        <div class="brand-info">
+          <h1>NPTEL Physics of Materials</h1>
+          <div class="brand-subtitle">
+            <span class="badge badge-primary">Course 113106040</span>
+            <span>•</span>
+            <span>Dr. Prathap Haridoss (IIT Madras)</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="header-stats">
+        <div class="stat-pill">
+          <div class="stat-label">Tests Taken</div>
+          <div class="stat-value" id="stat-tests-count">0</div>
+        </div>
+        <div class="stat-pill">
+          <div class="stat-label">Best Score</div>
+          <div class="stat-value" id="stat-best-score">0%</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Week Selector Navigation Bar -->
+    <nav class="weeks-nav" id="weeks-nav-container" aria-label="Course Weeks">
+      <!-- Injected dynamically by app.js -->
+    </nav>
+
+    <!-- Current Week Context Info Card -->
+    <div class="card" style="margin-bottom: 24px; padding: 18px 24px; border-left: 4px solid var(--primary);">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+        <h2 id="current-week-title" style="font-size: 1.15rem; font-weight: 700; color: #fff;">
+          Week 3: Drude Model — Electrical & Thermal Conductivity
+        </h2>
+        <span class="badge badge-cyan">Exam Ready Mode</span>
+      </div>
+      <p id="current-week-summary" style="font-size: 0.88rem; color: var(--text-muted); margin-top: 6px;">
+        Classical electron transport, Ohm's law derivation, thermal conductivity, Wiedemann-Franz law, and model limitations.
+      </p>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="content-tabs" role="tablist">
+      <button class="tab-btn active" data-tab="assignment" id="tab-assignment" role="tab">
+        🎯 <span>Assignment 3 Test (10 Qs)</span>
+      </button>
+      <button class="tab-btn" data-tab="mastery" id="tab-mastery" role="tab">
+        ⚡ <span>Mastery Mock Exam (22 Qs)</span>
+      </button>
+      <button class="tab-btn" data-tab="study" id="tab-study" role="tab">
+        📖 <span>High-Yield Notes & Formulas</span>
+      </button>
+      <button class="tab-btn" data-tab="history" id="tab-history" role="tab">
+        📊 <span>Score History & Analytics</span>
+      </button>
+    </div>
+
+    <!-- TAB 1: Assignment Quiz Pane -->
+    <section class="tab-pane active" id="pane-assignment" role="tabpanel">
+      <!-- Injected dynamically by Quiz Engine in app.js -->
+    </section>
+
+    <!-- TAB 2: Mastery Mock Exam Pane -->
+    <section class="tab-pane" id="pane-mastery" role="tabpanel">
+      <!-- Injected dynamically by Quiz Engine in app.js -->
+    </section>
+
+    <!-- TAB 3: Study Materials & Formula Sheet Pane -->
+    <section class="tab-pane" id="pane-study" role="tabpanel">
+      <div class="study-grid">
+        
+        <!-- Left Column: Lecture Notes & Overview -->
+        <div style="display: flex; flex-direction: column; gap: 20px;">
+          <div class="card">
+            <h3 class="card-title" id="study-overview-heading">📌 Week Quick Overview</h3>
+            <p id="study-overview-text" style="font-size: 0.92rem; color: var(--text-muted); line-height: 1.6;"></p>
+          </div>
+
+          <div class="card">
+            <h3 class="card-title">📚 High-Yield Lecture Summaries</h3>
+            <div id="lectures-breakdown-container">
+              <!-- Injected by app.js -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column: Formula Sheet & Exam Pitfalls -->
+        <div style="display: flex; flex-direction: column; gap: 20px;">
+          
+          <!-- Exam Traps Card -->
+          <div class="card">
+            <h3 class="card-title">⚠️ Common Exam Traps & Pitfalls</h3>
+            <div id="exam-traps-container">
+              <!-- Injected by app.js -->
+            </div>
+          </div>
+
+          <!-- Formula Sheet Card -->
+          <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+              <h3 class="card-title" style="margin-bottom: 0;">🧮 Interactive Formula Sheet</h3>
+              <span style="font-size: 0.72rem; color: var(--text-dim);">Click formula to copy LaTeX</span>
+            </div>
+            <div id="formula-sheet-container">
+              <!-- Injected by app.js -->
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- TAB 4: Score History & Analytics Pane -->
+    <section class="tab-pane" id="pane-history" role="tabpanel">
+      <div class="card">
+        <div id="history-table-container">
+          <!-- Injected by app.js -->
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Data and Application Logic -->
+  <script src="./data.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>
